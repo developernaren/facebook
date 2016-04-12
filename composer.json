@@ -1,0 +1,21 @@
+{
+    "name": "developernaren/facebook",
+    "description": "Facebook Post and more",
+    "type": "Social Media",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Narendra Chitrakar",
+            "email": "developer.naren@gmail.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+             "DeveloperNaren\\" : "src\DeveloperNaren"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.1"
+    }
+}
