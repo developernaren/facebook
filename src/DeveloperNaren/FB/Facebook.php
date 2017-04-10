@@ -165,7 +165,11 @@ class Facebook
         return $this;
     }
 
-
+    function resetStatus()
+    {
+        $this->status = [];
+        return $this;
+    }
 
     function post() {
 
