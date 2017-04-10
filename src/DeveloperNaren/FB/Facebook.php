@@ -172,6 +172,11 @@ class Facebook
         return with( new PostBot( $this ) )->post();
     }
 
+    function postPhoto($url) {
+
+        return with( new PostBot( $this ) )->postPhoto($url);
+    }
+
 
 
 

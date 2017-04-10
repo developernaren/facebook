@@ -15,24 +15,20 @@ class PostBot
     private $finalUrl;
     private $postingAs;
     private $postTo;
+    private $client;
 
 
     function __construct(Facebook $facebook)
     {
 
+        $this->client = new Client();
         $this->facebook = $facebook;
         $this->preparePost();
-        $this->prepareUrl();
-
-        //$this->images = implode();
-
-
     }
 
     function prepareUrl()
     {
-
-        $accessToken = with(new AccessToken())->get();
+        $this->accessToken = with(new AccessToken())->get();
         $this->finalUrl = $this->baseUrl . '/' . $this->version;
         $this->postingAs = $this->facebook->getPostAs();
 
@@ -41,12 +37,6 @@ class PostBot
         } else {
             $this->finalUrl .= '/me';
         }
-
-        $this->finalUrl .= '/feed/?access_token=' . $accessToken;
-
-
-//        $images = $this->facebook->getImage();
-
 
     }
 
@@ -59,18 +49,16 @@ class PostBot
 
     function post()
     {
+        $this->prepareUrl();
+        $this->finalUrl .= '/feed';
+        $this->finalUrl = $this->appendAccessToken();
 
-        $client = new Client();
-
-
-        $formParam = [];
-        $formParam['message'] = $this->status;
+        $formParam = ['message' => $this->status];
 
         if( !empty( $this->facebook->getLink() ) ) {
             $formParam['link'] = $this->facebook->getLink();
         }
-
-        $res = $client->request('POST', $this->finalUrl, [
+        $res = $this->client->request('POST', $this->finalUrl, [
             'form_params' => $formParam
         ]);
 
@@ -99,6 +87,30 @@ class PostBot
     private function prepareStatus()
     {
         $this->status = implode(PHP_EOL, $this->facebook->getStatus());
+    }
+
+    function postPhoto($photoUrl)
+    {
+        $this->prepareUrl();
+        $this->prepareStatus();
+        $this->finalUrl .= '/photos';
+        $this->finalUrl = $this->appendAccessToken();
+
+        $formParam = [
+            'caption' => $this->status,
+            'url' => $photoUrl
+        ];
+
+        $res = $this->client->request('POST', $this->finalUrl, [
+            'form_params' => $formParam
+        ]);
+
+        return $res->getBody()->getContents();
+    }
+
+    private function appendAccessToken(){
+
+        return $this->finalUrl . '?access_token=' . $this->accessToken;
     }
 
 
